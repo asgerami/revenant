@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Typecheck on Stop",
+      "trigger": "Stop",
+      "description": "Runs typecheck across all packages after agent execution completes, reporting errors as a concise list or confirming clean status",
+      "action": {
+        "type": "command",
+        "command": "bash -c '\n# Run typecheck across all packages\noutput=$(pnpm -r typecheck 2>&1)\nexit_code=$?\n\nif [ $exit_code -eq 0 ]; then\n  echo \"Typecheck clean\"\n  exit 0\nfi\n\n# Parse errors and summarize\necho \"TypeScript errors:\"\necho \"\"\n\n# Extract file:line:column and error message patterns\necho \"$output\" | grep -E \"^[^:]+\\([0-9]+,[0-9]+\\):|^[^:]+:[0-9]+:[0-9]+:\" | while IFS= read -r line; do\n  # Try to extract file, line, and message\n  if [[ \"$line\" =~ ^([^:]+):([0-9]+):([0-9]+):(.*)$ ]]; then\n    file=\"${BASH_REMATCH[1]}\"\n    line_num=\"${BASH_REMATCH[2]}\"\n    message=$(echo \"${BASH_REMATCH[4]}\" | sed \"s/^[[:space:]]*//\" | head -c 100)\n    echo \"- $file:$line_num: $message\"\n  elif [[ \"$line\" =~ ^([^(]+)\\(([0-9]+),([0-9]+)\\):(.*)$ ]]; then\n    file=\"${BASH_REMATCH[1]}\"\n    line_num=\"${BASH_REMATCH[2]}\"\n    message=$(echo \"${BASH_REMATCH[4]}\" | sed \"s/^[[:space:]]*//\" | head -c 100)\n    echo \"- $file:$line_num: $message\"\n  fi\ndone | head -n 20\n\nexit 0\n'",
+        "timeout": 60
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Validate Source Structure",
+      "trigger": "PostFileCreate",
+      "description": "Validates that new source files have the required structure (fetcher.ts, parser.ts, parser.test.ts with fixtures) and prompts to create missing files",
+      "matcher": "^packages/core/src/sources/",
+      "action": {
+        "type": "command",
+        "command": "bash -c '\n# Read session context to get the file path\ncontext=$(cat)\nfile_path=$(echo \"$context\" | jq -r \".filePath // \\\"\\\"\")\n\n# Only process if it'\\''s in packages/core/src/sources\nif [[ ! \"$file_path\" =~ ^packages/core/src/sources/ ]]; then\n  exit 0\nfi\n\n# Extract source folder (e.g., packages/core/src/sources/npm -> npm)\nsource_dir=$(dirname \"$file_path\")\n\necho \"📁 New file created in source directory: $source_dir\"\necho \"\"\n\n# Check for required files\nmissing=()\n\nif [ ! -f \"$source_dir/fetcher.ts\" ]; then\n  missing+=(\"fetcher.ts\")\nfi\n\nif [ ! -f \"$source_dir/parser.ts\" ]; then\n  missing+=(\"parser.ts\")\nfi\n\nif [ ! -f \"$source_dir/parser.test.ts\" ]; then\n  missing+=(\"parser.test.ts\")\nelse\n  # Check if parser.test.ts uses fixtures\n  if ! grep -q \"fixtures/\" \"$source_dir/parser.test.ts\"; then\n    echo \"⚠️  parser.test.ts exists but doesn'\\''t reference fixtures/\"\n    echo \"   Tests should use recorded responses from fixtures/ instead of live network calls\"\n    echo \"\"\n  fi\nfi\n\nif [ ${#missing[@]} -gt 0 ]; then\n  echo \"❌ Missing required files in $source_dir:\"\n  for file in \"${missing[@]}\"; do\n    echo \"   - $file\"\n  done\n  echo \"\"\n  echo \"💡 Each source folder should have:\"\n  echo \"   - fetcher.ts (makes the HTTP request)\"\n  echo \"   - parser.ts (transforms the response)\"\n  echo \"   - parser.test.ts (tests parser with fixture data)\"\n  echo \"\"\n  echo \"Would you like me to create the missing files?\"\nelse\n  echo \"✅ All required files present in $source_dir\"\nfi\n'",
+        "timeout": 10
+      }
+    }
+  ]
+}

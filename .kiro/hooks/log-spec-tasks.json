@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Log Spec Task Completions",
+      "trigger": "PostTaskExec",
+      "description": "Appends a log entry to docs/kiro-log.md after each spec task completes, capturing the date, spec name, task title, and placeholders for features used and notes",
+      "action": {
+        "type": "command",
+        "command": "bash -c '\n# Read session context from stdin\ncontext=$(cat)\n\n# Extract spec name and task title from JSON\nspec_name=$(echo \"$context\" | jq -r \".spec.name // \\\"unknown\\\"\")\ntask_title=$(echo \"$context\" | jq -r \".task.title // \\\"unknown\\\"\")\n\n# Get current date\ndate=$(date +%Y-%m-%d)\n\n# Ensure docs directory exists\nmkdir -p docs\n\n# Create file with header if it doesn'\\''t exist\nif [ ! -f docs/kiro-log.md ]; then\n  echo \"# Kiro build log\" > docs/kiro-log.md\n  echo \"\" >> docs/kiro-log.md\nfi\n\n# Append log entry (template for manual completion)\necho \"- $date | spec: $spec_name | task: $task_title | Kiro features used: [TODO] | notes: [TODO]\" >> docs/kiro-log.md\n'",
+        "timeout": 10
+      },
+      "enabled": true
+    }
+  ]
+}

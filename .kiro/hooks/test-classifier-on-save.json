@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Test Classifier on Save",
+      "trigger": "PostFileSave",
+      "description": "Runs core package tests when classifier files are saved, detects property-based test failures, extracts counterexamples, and logs them to docs/kiro-log.md",
+      "matcher": "^packages/core/src/classifier/",
+      "action": {
+        "type": "command",
+        "command": "bash -c '\n# Run tests and capture output\noutput=$(pnpm --filter core test 2>&1)\nexit_code=$?\n\necho \"=== Test Results ===\"\necho \"$output\"\necho \"\"\n\n# Check for failures\nif [ $exit_code -ne 0 ]; then\n  echo \"❌ Tests failed\"\n  \n  # Look for property-based test failures (fast-check patterns)\n  if echo \"$output\" | grep -q \"Property failed after\"; then\n    echo \"\"\n    echo \"🔍 Property-based test failure detected:\"\n    echo \"\"\n    \n    # Extract property name, counterexample, and context\n    property=$(echo \"$output\" | grep -oP \"(?<=Property: ).*\" || echo \"unknown\")\n    counterexample=$(echo \"$output\" | grep -A 10 \"Counterexample:\" | head -n 11)\n    shrunk=$(echo \"$output\" | grep -A 5 \"Shrunk.*:\" | head -n 6)\n    \n    echo \"Property: $property\"\n    echo \"$counterexample\"\n    echo \"$shrunk\"\n    \n    # Append to kiro-log.md\n    mkdir -p docs\n    \n    # Add PBT findings section if it doesn'\\''t exist\n    if ! grep -q \"## PBT findings\" docs/kiro-log.md 2>/dev/null; then\n      echo \"\" >> docs/kiro-log.md\n      echo \"## PBT findings\" >> docs/kiro-log.md\n      echo \"\" >> docs/kiro-log.md\n    fi\n    \n    # Append the failure\n    {\n      echo \"### $(date +%Y-%m-%d\\ %H:%M:%S)\"\n      echo \"**Property:** $property\"\n      echo \"\\`\\`\\`\"\n      echo \"$counterexample\"\n      [ -n \"$shrunk\" ] && echo \"$shrunk\"\n      echo \"\\`\\`\\`\"\n      echo \"\"\n    } >> docs/kiro-log.md\n    \n    echo \"\"\n    echo \"📝 Counterexample logged to docs/kiro-log.md\"\n  fi\nelse\n  echo \"✅ All tests passed\"\nfi\n\nexit 0\n'",
+        "timeout": 120
+      }
+    }
+  ]
+}

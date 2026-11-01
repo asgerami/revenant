@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Guard Dangerous Commands",
+      "trigger": "PreToolUse",
+      "description": "Intercepts shell commands and blocks destructive operations (force push, hard reset, unsafe rm -rf, publish commands, database drops) requiring user confirmation",
+      "matcher": "execute_bash|control_bash_process",
+      "action": {
+        "type": "command",
+        "command": "bash -c '\n# Read the tool invocation context\ncontext=$(cat)\ntool_name=$(echo \"$context\" | jq -r \".toolName // \\\"\\\"\")\n\n# Only check execute_bash and control_bash_process commands\nif [[ \"$tool_name\" != \"execute_bash\" && \"$tool_name\" != \"control_bash_process\" ]]; then\n  exit 0\nfi\n\n# Extract the command being run\ncommand=$(echo \"$context\" | jq -r \".toolInput.command // \\\"\\\"\")\n\n# Patterns to block\ndeclare -a dangerous_patterns=(\n  \"git push.*--force\"\n  \"git push.*-f[^a-z]\"\n  \"git reset.*--hard\"\n  \"npm publish\"\n  \"pnpm publish\"\n  \"DROP DATABASE\"\n  \"DROP TABLE\"\n  \"TRUNCATE\"\n  \"prisma db push --force-reset\"\n  \"prisma migrate reset\"\n)\n\n# Check for rm -rf on dangerous paths\nif echo \"$command\" | grep -qE \"rm\\s+(-[a-z]*r[a-z]*f|--recursive.*--force|-[a-z]*f[a-z]*r)\"; then\n  # Allow if targeting safe directories\n  if ! echo \"$command\" | grep -qE \"rm.*-[rf]{2}.*(node_modules|dist|\\.next|/node_modules|/dist|/\\.next)(\\s|$|/)\"; then\n    echo \"{\\\"hookSpecificOutput\\\":{\\\"permissionDecision\\\":\\\"ask\\\",\\\"permissionDecisionReason\\\":\\\"Command contains '\\''rm -rf'\\'' targeting directories outside node_modules, dist, or .next\\\"}}\" >&1\n    exit 0\n  fi\nfi\n\n# Check each dangerous pattern\nfor pattern in \"${dangerous_patterns[@]}\"; do\n  if echo \"$command\" | grep -qiE \"$pattern\"; then\n    reason=\"Command matches dangerous pattern: $pattern\"\n    echo \"{\\\"hookSpecificOutput\\\":{\\\"permissionDecision\\\":\\\"ask\\\",\\\"permissionDecisionReason\\\":\\\"$reason\\\"}}\" >&1\n    exit 0\n  fi\ndone\n\n# Safe to proceed\nexit 0\n'",
+        "timeout": 5
+      }
+    }
+  ]
+}

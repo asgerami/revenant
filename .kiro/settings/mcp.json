@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "disabled": false
+    },
+    "playwright": {
+      "command": "/home/amir/.npm-global/bin/playwright-mcp",
+      "args": [
+        "--headless",
+        "--isolated",
+        "--executable-path",
+        "/home/amir/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome"
+      ],
+      "disabled": false
+    }
+  }
+}

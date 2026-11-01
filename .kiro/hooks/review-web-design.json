@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Review Web Design Standards",
+      "trigger": "PostFileSave",
+      "description": "Reviews web app TSX files against design standards in steering/design.md, checking WCAG contrast, motion preferences, mobile layout, real data usage, and accent color usage",
+      "matcher": "^apps/web/.*\\.tsx$",
+      "action": {
+        "type": "agent",
+        "prompt": "Review the saved file against .kiro/steering/design.md. Check:\n\n1. **Text contrast:** All text meets WCAG AA minimum (4.5:1 for normal text, 3:1 for large text)\n2. **Motion:** Animations respect prefers-reduced-motion media query\n3. **Mobile layout:** Works at 375px viewport width\n4. **Real data:** Every grave/visual shows real data, no lorem ipsum or placeholders\n5. **Spectral green accent:** Only used for primary actions, not decorative elements\n\nReport only actual problems as a short bulleted list with specific fixes. If everything passes, respond with \"Design check passed\" only."
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "npm": {
+    "metadata": {
+      "name": "deprecated-pkg",
+      "dist-tags": {
+        "latest": "1.0.0"
+      },
+      "versions": {
+        "1.0.0": {
+          "deprecated": "This package is deprecated. Use new-pkg instead."
+        }
+      },
+      "time": {
+        "modified": "2020-01-01T00:00:00.000Z",
+        "1.0.0": "2020-01-01T00:00:00.000Z"
+      }
+    },
+    "latest": {
+      "name": "deprecated-pkg",
+      "version": "1.0.0",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/example/deprecated-pkg.git"
+      }
+    }
+  },
+  "downloads": {
+    "downloads": 1000,
+    "start": "2024-01-01",
+    "end": "2024-01-07",
+    "package": "deprecated-pkg"
+  },
+  "osv": {
+    "vulns": []
+  }
+}

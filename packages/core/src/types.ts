@@ -4,12 +4,32 @@ export type LifecycleState = 'ALIVE' | 'DORMANT' | 'DYING' | 'DEAD' | 'ZOMBIE';
 
 export interface LifecycleVerdict {
   state: LifecycleState;
-  reason: string;
-  signals: string[];
+  score: number;
+  reasons: string[];
+  epitaph: string;
 }
 
 export interface PackageSignals {
   name: string;
-  version: string;
-  // Add more signal fields as sources are implemented
+  resolvedVersion: string;
+  deprecatedMessage: string | null;
+  lastPublishAt: Date | null;
+  repoUrl: string | null;
+  repoStatus: 'ok' | 'archived' | 'disabled' | 'missing' | 'unknown';
+  lastCommitAt: Date | null;
+  weeklyDownloads: number | null;
+  vulns: {
+    id: string;
+    severity: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL' | 'UNKNOWN';
+    hasFix: boolean;
+  }[];
+  e18e: { kind: 'preferred' | 'native' | 'micro'; replacements: string[] } | null;
+  fetchedAt: Date;
+}
+
+export interface Dependency {
+  name: string;
+  range: string;
+  resolvedVersion: string;
+  kind: 'prod' | 'dev';
 }

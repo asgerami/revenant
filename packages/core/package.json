@@ -16,10 +16,12 @@
     "test": "vitest --run --passWithNoTests",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "record-fixture": "tsx scripts/record-fixtures.ts"
   },
   "dependencies": {
-    "module-replacements": "^3.4.0"
+    "module-replacements": "^3.4.0",
+    "yaml": "2.9.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

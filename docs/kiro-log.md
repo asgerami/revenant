@@ -11,3 +11,4 @@ This file tracks how Kiro was used to build Revenant, for the hackathon submissi
 - Added root-level scripts for build, test, typecheck, lint
 - Created .env.example with database and API configuration
 - Added README with project overview
+- 2026-11-01 | setup | Kiro (Haiku) invented a non-existent version, module-replacements@^1.1.0, which broke pnpm install. Fixed versions and added a steering rule in tech.md to always check real versions with npm view.

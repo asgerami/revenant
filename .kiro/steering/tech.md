@@ -28,3 +28,4 @@ inclusion: always
 - Respect rate limits; batch GitHub and OSV calls.
 - No secrets in the repo. Every variable lives in `.env.example`.
 - Keep `/.kiro` committed. Never add it to `.gitignore`.
+- Before adding or changing any dependency, check the real current version with `npm view <package> version` and use that. Never guess version numbers.

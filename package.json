@@ -1,0 +1,26 @@
+{
+  "name": "revenant-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Revenant finds the dead packages in your codebase and brings your code back to life",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "dev": "pnpm --filter web dev"
+  },
+  "keywords": [
+    "dependencies",
+    "npm",
+    "security",
+    "maintenance",
+    "typescript"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}

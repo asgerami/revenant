@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dark cemetery theme - WCAG AA compliant colors */
+  --background: #0a0a0a;
+  --foreground: #ededed; /* 4.5:1+ contrast ratio */
+  --foreground-dimmed: #a3a3a3; /* For secondary text */
+  --spectral-green: #00ff88; /* Accent color for primary actions only */
+  --border: #262626;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

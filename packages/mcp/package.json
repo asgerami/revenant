@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "vitest --run",
+    "test": "vitest --run --passWithNoTests",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src"
@@ -23,7 +23,7 @@
     "npm"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.5.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "@revenant/core": "workspace:*"
   },
   "devDependencies": {
@@ -31,8 +31,8 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.56.0",
-    "fast-check": "^3.15.0",
+    "fast-check": "^4.10.2",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.0"
+    "vitest": "^5.0.5"
   }
 }
